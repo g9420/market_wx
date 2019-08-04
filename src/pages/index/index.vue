@@ -62,7 +62,7 @@ export default {
       this.$http.get('/banner/getBanner', {}).then((d) => {
         if (d.data.success) {
           for (var i = 0; i < d.data.result.data.length; i++) {
-            this.banner[i] = this.ideaURL + d.data.result.data[i].url
+            this.banner[i] = this.ideaURL + d.data.result.data[i].imgUrl
           }
           console.log(this.banner)
         }
