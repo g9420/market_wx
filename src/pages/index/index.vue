@@ -16,6 +16,13 @@
     <div class="div_hr">
     </div>
     <div class="for_goods">为你推荐</div>
+    <div class="stuff">
+      <div class="stuff_item" v-for="(item, index) in stuff" :key="index">
+        <img class="item_img" :src="item.file[0].url" alt="">
+        <p>{{item.stuffName}}</p>
+        <p>{{item.stuffPrice}}</p>
+      </div>
+  </div>
   </div>
 </template>
 
@@ -30,19 +37,24 @@ export default {
   },
 
   data () {
-    return {
-      motto: 'Hello miniprograme',
+   return {
       goods_class: [],
-      userInfo: {
-        nickName: 'mpvue',
-        avatarUrl: 'http://mpvue.com/assets/logo.png'
-      },
-      banner: []
+      banner: [],
+      stuff: [],
+      limit: 10,
+      tp: '',
+      page: 1,
+      load: true,
+      loading: true
     }
   },
 
   components: {
     Swiper, card
+  },
+
+  onReachBottom () {
+    console.log('11111111111111111')
   },
 
   methods: {
@@ -57,14 +69,27 @@ export default {
       }).catch(err => {
         console.log(err.status, err.message)
       })
-      this.$http.get('/goodsClass/getGoodsClass', {}).then((d) => {
+
+      //  获取分类
+      this.$http.get('/category/getCategory', {}).then((d) => {
         if (d.data.success) {
           this.goods_class = d.data.result.data
         }
       }).catch(err => {
         console.log(err.status, err.message)
       })
+      //  获取表单
+      this.$http.get('/stuff/getStuff', {'sp': this.page}).then((d) => {
+        console.log(d.data.result.data)
+        if (d.data.success) {
+          this.stuff = d.data.result.data
+        }
+        console.log(this.stuff)
+      }).catch(err => {
+        console.log(err.status, err.message)
+      })
     },
+     
      
      clickSearch () {
       wx.navigateTo({
@@ -81,21 +106,19 @@ export default {
 </script>
 
 <style scoped>
-
 .index{
+  background-color: #ededed;
   width: 100%;
   overflow: hidden;
   position: relative;
 }
-
 .search{
   margin: 0.2rem;
   width: 7.1rem;
   height: 0.7rem;
-  background-color: #ededed;
+  background-color:white;
   border-radius:35rpx;
 }
-
 .top-span{
   display: inline-block;
   margin-left: 15rpx;
@@ -105,7 +128,6 @@ export default {
   background: url("../../../static/images/search.png");
   background-size: 100%
 }
-
 .top-input {
   height: 0.7rem;
   line-height: 0.35rem;
@@ -113,17 +135,17 @@ export default {
   margin-left: 0.1rem;
   width: 6.1rem;
 }
-
 .swiper{
   width: 7.5rem;
   height: 4.21rem;
 }
-
 .goods_class{
+  overflow: auto;
   margin-top: 0.2rem;
   width: 7.5rem;
+  padding-bottom: 0.2rem; 
+  background-color:white;
 }
-
 .class_item{
   text-align: center;
   float: left;
@@ -137,17 +159,25 @@ export default {
   height: 0.4rem;
 }
 
-.div_hr{
-  clear: both;
-  width: 7.5rem;
-  height: 0.5rem;
-  background-color: #ededed;
-}
-
 .for_goods{
   margin-top: 0.3rem;
-  margin-bottom: 0.3rem;
   text-align: center;
 }
-
+.stuff{
+  margin-top: -0.25rem;
+  width: 7.5rem;
+}
+.stuff_item{
+  background-color:white;
+  margin-top: 0.5rem;
+  margin-left: 0.2rem;
+  float: left;
+  width: 3.45rem;
+}
+.item_img{
+  padding-top: 0.2rem;
+  padding-left: 0.15rem;
+  width: 3rem;
+  height: 3rem;
+}
 </style>
